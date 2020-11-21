@@ -4,7 +4,7 @@
   "description": "A system to collect data for the Soha AI-powered chatbot.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon"
   },
   "repository": {
     "type": "git",
@@ -26,11 +26,13 @@
   "homepage": "https://gitlab.com/ParsaHejabi/soha-data-collection-system#readme",
   "dependencies": {
     "apollo-server": "^2.19.0",
+    "dotenv": "^8.2.0",
     "graphql": "^15.4.0",
     "mongoose": "^5.10.15"
   },
   "devDependencies": {
     "husky": "^4.3.0",
+    "nodemon": "^2.0.6",
     "prettier": "2.2.0",
     "pretty-quick": "^3.1.0"
   },

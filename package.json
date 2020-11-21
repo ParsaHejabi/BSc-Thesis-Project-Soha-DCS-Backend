@@ -1,0 +1,42 @@
+{
+  "name": "soha-data-collection",
+  "version": "1.0.0",
+  "description": "A system to collect data for the Soha AI-powered chatbot.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/ParsaHejabi/soha-data-collection-system.git"
+  },
+  "keywords": [
+    "NLP",
+    "AI",
+    "Artificiall",
+    "Intelligence",
+    "Information",
+    "Extraction"
+  ],
+  "author": "Parsa Hejabi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/ParsaHejabi/soha-data-collection-system/issues"
+  },
+  "homepage": "https://gitlab.com/ParsaHejabi/soha-data-collection-system#readme",
+  "dependencies": {
+    "apollo-server": "^2.19.0",
+    "graphql": "^15.4.0",
+    "mongoose": "^5.10.15"
+  },
+  "devDependencies": {
+    "husky": "^4.3.0",
+    "prettier": "2.2.0",
+    "pretty-quick": "^3.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  }
+}

@@ -17,6 +17,7 @@ module.exports = gql`
   type User {
     id: ID!
     username: String!
+    requests: [ID]!
     points: Int
     createdAt: Date!
     updatedAt: Date!
@@ -42,10 +43,17 @@ module.exports = gql`
   }
 
   type Query {
+    users: [User]!
+    topUsers: [User]!
     userRequests: [UserRequest]!
   }
 
   type Mutation {
     addUserRequest(userRequestInput: UserRequestInput): UserRequest!
+  }
+
+  type Subscription {
+    newUserRequest: UserRequest!
+    newTopUsers: [User]!
   }
 `

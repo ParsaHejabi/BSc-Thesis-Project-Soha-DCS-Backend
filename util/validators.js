@@ -13,6 +13,6 @@ module.exports.validateRequestInput = (username, text) => {
 
   return {
     errors,
-    valid: Object.keys.length < 1,
+    valid: Object.keys(errors).length < 1,
   }
 }

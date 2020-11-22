@@ -9,13 +9,10 @@ const userSchema = new Schema(
       required: true,
       trim: true,
     },
-    website: {
-      type: Boolean,
-      required: true,
-    },
     requests: {
-      type: [UserRequestSchema],
+      type: [{ type: Schema.Types.ObjectId, ref: 'UserRequest' }],
       required: true,
+      default: [],
     },
     points: {
       type: Number,

@@ -1,13 +1,13 @@
 module.exports.validateRequestInput = (username, text) => {
   const errors = {}
   if (username.trim() === '') {
-    errors.username = 'username must not be empty'
+    errors.username = 'نام کاربری نمی‌تواند خالی باشد.'
   }
   if (text.trim() === '') {
-    errors.text = 'text must not be empty'
+    errors.text = 'متن ورودی نمی‌تواند خالی باشد.'
   } else {
     if (text.trim().length <= 10) {
-      errors.text = 'text is too short'
+      errors.text = 'متن ورودی بسیار کوتاه است.'
     }
   }
 

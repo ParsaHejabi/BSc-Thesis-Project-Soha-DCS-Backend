@@ -70,9 +70,24 @@ function Home() {
         : values,
     onError(error) {
       setErrors(error.graphQLErrors[0].extensions.exception.errors.errors)
+      setValues({
+        username: '',
+        text: '',
+        type: '',
+        possibleReference: '',
+      })
     },
     refetchQueries: [{ query: GET_TOP_USERS }],
     ignoreResults: false,
+    onCompleted: () => {
+      setErrors({})
+      setValues({
+        username: '',
+        text: '',
+        type: '',
+        possibleReference: '',
+      })
+    },
   })
 
   const mapArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -84,6 +99,13 @@ function Home() {
   ]
 
   const onChange = (event) => {
+    if (errors.hasOwnProperty(event.target.name)) {
+      if (event.target.value.trim() !== '') {
+        let newErrors = errors
+        delete newErrors[event.target.name]
+        setErrors(newErrors)
+      }
+    }
     setValues({ ...values, [event.target.name]: event.target.value })
   }
 
@@ -163,21 +185,22 @@ function Home() {
             loading={mutationLoading}
             success={mutationData && Object.keys(mutationData).length !== 0}
           >
-            <Form.Group widths="equal">
+            <Form.Group widths="equal" className="rtl-form-field">
               <Form.Input
                 fluid
                 name="username"
-                label="Username"
-                placeholder="Username"
+                label="نام کاربری"
+                placeholder="نام کاربری"
                 value={values.username}
                 onChange={onChange}
                 error={
                   errors.hasOwnProperty('username') && {
                     content: errors.username,
-                    pointing: 'below',
+                    pointing: 'above',
                   }
                 }
                 required
+                className="rtl-form-field"
               />
               <Form.Select
                 fluid
@@ -187,6 +210,7 @@ function Home() {
                 placeholder="نوع ورودی"
                 value={values.type}
                 onChange={onChangeSelect}
+                className="rtl-form-field"
               />
               <Form.Input
                 fluid
@@ -195,6 +219,7 @@ function Home() {
                 placeholder="برای مثال آموزش..."
                 value={values.possibleReference}
                 onChange={onChange}
+                className="rtl-form-field"
               />
             </Form.Group>
             <Form.TextArea
@@ -207,18 +232,22 @@ function Home() {
               error={
                 errors.hasOwnProperty('text') && {
                   content: errors.text,
-                  pointing: 'below',
+                  pointing: 'above',
                 }
               }
+              className="rtl-form-field"
             />
             {mutationData && (
               <Message
                 success
                 header={`از همکاری شما متشکریم...`}
                 content={`به کاربر با نام‌کاربری ${mutationData.addUserRequest.user.username} پنج امتیاز اضافه شد و امتیاز کلی برابر است با: ${mutationData.addUserRequest.user.points}`}
+                className="rtl-form-field"
               />
             )}
-            <Form.Button primary>ثبت</Form.Button>
+            <Form.Button className="rtl-form-field" primary>
+              ثبت
+            </Form.Button>
           </Form>
         </Grid.Column>
       </Grid.Row>

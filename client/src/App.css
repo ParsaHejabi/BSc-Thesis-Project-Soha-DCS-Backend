@@ -1,5 +1,51 @@
+@font-face {
+  font-family: 'IRANSans Black';
+  font-style: normal;
+  font-weight: 900;
+  src: url('./fonts/IRANSansWeb_Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: IRANSans;
+  font-style: normal;
+  font-weight: normal;
+  src: url('./fonts/IRANSansWeb.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: dana;
+  font-style: normal;
+  font-weight: 500;
+  src: url('./fonts/dana-medium.eot');
+}
+
 .page-title {
+  direction: rtl;
   display: block !important;
   text-align: center;
-  font-size: 3rem;
+}
+
+.page-title h1 {
+  font-family: 'dana';
+}
+
+.rtl-form-field {
+  direction: rtl;
+  font-family: IRANSans !important;
+}
+
+.rtl-form-field * {
+  text-align: right !important;
+}
+
+.rtl-form-field input {
+  font-family: IRANSans !important;
+}
+
+.rtl-form-field textarea {
+  font-family: IRANSans !important;
+}
+
+.rtl-form-field button {
+  font-family: IRANSans !important;
 }

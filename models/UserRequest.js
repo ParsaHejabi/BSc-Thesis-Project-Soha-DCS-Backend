@@ -14,10 +14,14 @@ const userRequestchema = new Schema(
     },
     type: {
       type: String,
-      enum: ['REQUEST', 'QUESTION', 'INSULT'],
+      enum: ['REQUEST', 'QUESTION', 'OPINION', 'OTHER'],
     },
     possibleReference: {
       type: String,
+    },
+    properties: {
+      type: [{ type: String, enum: ['INSULT', 'SARCASM', 'HUMOR'] }],
+      default: [],
     },
     place: {
       type: String,

@@ -9,6 +9,10 @@ const userSchema = new Schema(
       required: true,
       trim: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     requests: {
       type: [{ type: Schema.Types.ObjectId, ref: 'UserRequest' }],
       required: true,

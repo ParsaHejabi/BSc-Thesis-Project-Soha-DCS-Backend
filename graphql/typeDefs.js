@@ -10,13 +10,21 @@ module.exports = gql`
 
   enum RequestType {
     QUESTION
-    INSULT
     REQUEST
+    OPINION
+    OTHER
+  }
+
+  enum RequestProperty {
+    INSULT
+    SARCASM
+    HUMOR
   }
 
   type User {
     id: ID!
     username: String!
+    token: String!
     requests: [ID]!
     points: Int
     createdAt: Date!
@@ -25,20 +33,31 @@ module.exports = gql`
 
   type UserRequest {
     id: ID!
-    user: User!
+    user: ID!
     text: String!
     type: RequestType
     possibleReference: String
+    properties: [RequestProperty]
     place: RequestPlace!
     createdAt: Date!
     updatedAt: Date!
   }
 
-  input UserRequestInput {
+  input RegisterInput {
     username: String!
+    password: String!
+  }
+
+  input LoginInput {
+    username: String!
+    password: String!
+  }
+
+  input UserRequestInput {
     text: String!
     type: RequestType
     possibleReference: String
+    properties: [RequestProperty]
     place: RequestPlace!
   }
 
@@ -46,9 +65,12 @@ module.exports = gql`
     users: [User]!
     topUsers: [User]!
     userRequests: [UserRequest]!
+    userRequest(username: String!): UserRequest
   }
 
   type Mutation {
+    register(registerInput: RegisterInput): User!
+    login(loginInput: LoginInput): User!
     addUserRequest(userRequestInput: UserRequestInput): UserRequest!
   }
 

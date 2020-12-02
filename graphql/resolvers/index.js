@@ -10,6 +10,7 @@ module.exports = {
     ...topUsers.Query,
   },
   Mutation: {
+    ...users.Mutation,
     ...userRequestResolvers.Mutation,
   },
   Subscription: {

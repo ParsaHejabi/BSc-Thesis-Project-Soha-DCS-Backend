@@ -3,31 +3,49 @@ const { UserInputError } = require('apollo-server')
 const User = require('../../models/User')
 const { UserRequest } = require('../../models/UserRequest')
 const { validateRequestInput } = require('../../util/validators')
+const checkAuth = require('../../util/check-auth')
 
 module.exports = {
   Query: {
     userRequests: async () => {
       try {
         let userRequests = await UserRequest.find().sort({ createdAt: -1 })
-        let newUserRequests = userRequests.map(async (value) => {
-          value.user = await User.findById(value.user)
-          return value
-        })
-
-        return newUserRequests
+        return userRequests
       } catch (error) {
         throw new Error(error)
+      }
+    },
+    userRequest: async (parent, { username }, context, info) => {
+      try {
+        const user = await User.findOne({ username })
+
+        if (user) {
+          const userRequest = await UserRequest.findOne({ user: user._id })
+          if (userRequest) {
+            return userRequest
+          } else {
+            throw new Error('User Request Not Found')
+          }
+        } else {
+          throw new Error('User Not Found')
+        }
+      } catch (e) {
+        throw new Error(e)
       }
     },
   },
   Mutation: {
     addUserRequest: async (
       parent,
-      { userRequestInput: { username, text, type, possibleReference, place } },
+      {
+        userRequestInput: { text, type, possibleReference, properties, place },
+      },
       context,
       info
     ) => {
-      const { errors, valid } = validateRequestInput(username, text)
+      const user = checkAuth(context)
+
+      const { errors, valid } = validateRequestInput(text)
 
       if (!valid) {
         throw new UserInputError('Validation Error', {
@@ -37,77 +55,47 @@ module.exports = {
         })
       }
 
-      const user = await User.findOne({ username: username })
+      const newUserRequest = new UserRequest({
+        user: user.id,
+        text: text,
+        type: type,
+        possibleReference: possibleReference,
+        properties: properties,
+        place: place,
+      })
 
-      if (user) {
-        const newUserRequest = new UserRequest({
-          user: user._id,
-          text: text,
-          type: type,
-          possibleReference: possibleReference,
-          place: place,
-        })
+      const res = await newUserRequest.save()
 
-        const res = await newUserRequest.save()
-
-        user.requests.push(res)
-
-        if (place === 'WEBSITE') {
-          user.points = user.points + 5
+      User.findById(user.id, async (err, user) => {
+        if (err) {
+          throw new Error(err)
         } else {
-          user.points = user.points + 2
+          user.requests.push(res)
+
+          if (place === 'WEBSITE') {
+            user.points = user.points + 5
+          } else {
+            user.points = user.points + 2
+          }
+          await user.save()
+
+          context.pubsub.publish('NEW_USER_REQUEST', {
+            newUserRequest: newUserRequest,
+          })
+          context.pubsub.publish('NEW_TOP_USERS', {
+            newTopUsers: await User.find()
+              .sort({ points: -1, updatedAt: 1 })
+              .limit(10),
+          })
         }
-        await user.save()
-
-        newUserRequest.user = await User.findById(newUserRequest.user)
-        context.pubsub.publish('NEW_REQUEST', {
-          newUserRequest: newUserRequest,
-        })
-        context.pubsub.publish('NEW_TOP_USERS', {
-          newTopUsers: await User.find()
-            .sort({ points: -1, updatedAt: 1 })
-            .limit(10),
-        })
-        return newUserRequest
-      } else {
-        const newUser = new User({ username })
-        await newUser.save()
-
-        let newUserRequest = new UserRequest({
-          user: newUser._id,
-          text: text,
-          type: type,
-          possibleReference: possibleReference,
-          place: place,
-        })
-
-        const res = await newUserRequest.save()
-
-        newUser.requests.push(res)
-        if (place == 'WEBSITE') {
-          newUser.points = newUser.points + 5
-        } else {
-          newUser.points = newUser.points + 2
-        }
-        await newUser.save()
-
-        newUserRequest.user = await User.findById(newUserRequest.user)
-        context.pubsub.publish('NEW_REQUEST', {
-          newUserRequest: newUserRequest,
-        })
-        context.pubsub.publish('NEW_TOP_USERS', {
-          newTopUsers: await User.find()
-            .sort({ points: -1, updatedAt: 1 })
-            .limit(10),
-        })
-        return newUserRequest
-      }
+      })
+      return newUserRequest
     },
   },
   Subscription: {
     newUserRequest: {
       subscribe: (parent, args, { pubsub }, info) => {
-        return pubsub.asyncIterator('NEW_REQUEST')
+        return pubsub.asyncIterator('NEW_USER_REQUEST')
       },
     },
   },

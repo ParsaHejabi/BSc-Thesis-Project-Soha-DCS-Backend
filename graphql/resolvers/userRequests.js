@@ -20,7 +20,9 @@ module.exports = {
         const user = await User.findOne({ username })
 
         if (user) {
-          const userRequest = await UserRequest.findOne({ user: user._id })
+          const userRequest = await UserRequest.find({ user: user._id }).sort({
+            createdAt: -1,
+          })
           if (userRequest) {
             return userRequest
           } else {

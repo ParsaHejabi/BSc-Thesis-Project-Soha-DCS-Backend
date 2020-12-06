@@ -113,7 +113,18 @@ function Home() {
     setValues({ ...values, [data.name]: data.value })
   }
 
-  if (error) return <p>Error :(</p>
+  if (error)
+    return (
+      <div className="form-container">
+        <h1 className="page-title">
+          مشکلی در اتصال به سرور به وجود آمده.
+          <br />
+          در حال بررسی و رفع مشکل هستیم.
+          <br />
+          لطفا دوباره تلاش کنید.
+        </h1>
+      </div>
+    )
 
   return (
     <Grid columns={2} divided>

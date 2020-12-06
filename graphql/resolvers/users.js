@@ -42,9 +42,7 @@ module.exports = {
 
       if (!valid) {
         throw new UserInputError('Validation Error', {
-          errors: {
-            errors,
-          },
+          errors,
         })
       }
 
@@ -85,9 +83,7 @@ module.exports = {
 
       if (!valid) {
         throw new UserInputError('Validation Error', {
-          errors: {
-            errors,
-          },
+          errors,
         })
       }
 

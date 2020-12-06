@@ -23,10 +23,16 @@
   direction: rtl;
   display: block !important;
   text-align: center;
+  font-family: 'dana';
 }
 
 .page-title h1 {
   font-family: 'dana';
+}
+
+.form-container {
+  width: 500px;
+  margin: auto;
 }
 
 .rtl-form-field {
@@ -47,5 +53,23 @@
 }
 
 .rtl-form-field button {
+  font-family: IRANSans !important;
+}
+
+.form-field {
+  direction: rtl;
+  font-family: IRANSans !important;
+}
+
+.form-field input {
+  direction: ltr;
+  font-family: IRANSans !important;
+}
+
+.form-field div.header {
+  font-family: IRANSans !important;
+}
+
+.form-field button {
   font-family: IRANSans !important;
 }

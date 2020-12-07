@@ -29,6 +29,7 @@ module.exports = gql`
     points: Int
     createdAt: Date!
     updatedAt: Date!
+    messages: [Message]
   }
 
   type UserRequest {
@@ -60,22 +61,32 @@ module.exports = gql`
     properties: [RequestProperty]
     place: RequestPlace!
   }
-
+  type Message {
+    id: ID!
+    user: String!
+    content: String!
+  }
   type Query {
     users: [User]!
     topUsers: [User]!
     userRequests: [UserRequest]!
-    userRequest(username: String!): [UserRequest]!
+    userRequest(username: String!): [UserRequest]
+
+    messages: [Message!]
   }
 
   type Mutation {
     register(registerInput: RegisterInput): User!
     login(loginInput: LoginInput): User!
     addUserRequest(userRequestInput: UserRequestInput): UserRequest!
+
+    postMessage(user: String!, content: String!): ID!
   }
 
   type Subscription {
     newUserRequest: UserRequest!
     newTopUsers: [User]!
+
+    messages: [Message!]
   }
 `

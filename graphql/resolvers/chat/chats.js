@@ -1,34 +1,48 @@
 const { PubSub, withFilter } = require('apollo-server')
 const checkAuth = require('../../../util/check-auth')
-const messages = []
 
-const subscribers = []
-const onMessagesUpdates = (fn) => subscribers.push(fn)
+const messages = {}
+const subscribers = {}
+
+const onMessagesUpdates = (receiver, fn) => (subscribers[receiver] = fn)
 const chatResolvers = {
   Query: {
     messages: () => messages,
   },
   Mutation: {
-    postMessage: async (parent, { user, content }, context) => {
-      console.log('AAAAAAAAAAAAAAAAAa')
-      console.log(checkAuth(context))
-      console.log('BBBBB')
-      const id = messages.length
-      messages.push({
+    postMessage: async (parent, { user, receiver, content }, context) => {
+      checkAuth(context)
+      console.log(user + ' is sending e message to ' + receiver)
+      if (!messages[receiver] || !messages[user] || user === receiver) {
+        throw new Error("User isn't available! " + user + ' ' + receiver)
+      }
+      const id = 123
+      const message = {
         id,
         user,
+        receiver,
         content,
-      })
-      subscribers.forEach((fn) => fn())
+      }
+      messages[receiver].push(message)
+      messages[user].push(message)
+      subscribers[receiver]()
+      subscribers[user]()
       return id
     },
   },
   Subscription: {
     messages: {
       subscribe: async (parent, args, { pubsub }) => {
-        const channel = Math.random().toString(36).slice(2, 15)
-        onMessagesUpdates(() => pubsub.publish(channel, { messages }))
-        setTimeout(() => pubsub.publish(channel, { messages }), 0)
+        console.log(args.receiver + ' Joined')
+        messages[args.receiver] = []
+        const channel = args.receiver
+        onMessagesUpdates(args.receiver, () =>
+          pubsub.publish(channel, { messages: messages[args.receiver] })
+        )
+        setTimeout(
+          () => pubsub.publish(channel, { messages: messages[args.receiver] }),
+          0
+        )
         return pubsub.asyncIterator(channel)
       },
     },

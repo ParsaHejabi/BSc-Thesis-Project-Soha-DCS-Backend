@@ -4,9 +4,7 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 module.exports = (context) => {
-  console.log('AAAAAAAAAAAsssssssss')
   const authHeader = context.req.headers.authorization
-  console.log('AAAAAAAAAAAsssssssss')
   if (authHeader) {
     const token = authHeader.split('Bearer ')[1]
     if (token) {

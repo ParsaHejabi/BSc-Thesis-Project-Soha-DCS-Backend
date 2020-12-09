@@ -2,13 +2,24 @@ import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { split, HttpLink } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
+import { setContext } from '@apollo/client/link/context'
 
 const httpLink = new HttpLink({
-  uri: 'http://127.0.0.1:4000/',
+  uri: 'http://192.168.1.57:4000/',
+})
+
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('jwtToken')
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : '',
+    },
+  }
 })
 
 const wsLink = new WebSocketLink({
-  uri: `ws://127.0.0.1:4000/graphql`,
+  uri: `ws://192.168.1.57:4000/graphql`,
   options: {
     reconnect: true,
   },
@@ -32,7 +43,7 @@ const splitLink = split(
 )
 
 const client = new ApolloClient({
-  link: splitLink,
+  link: authLink.concat(splitLink),
   cache: new InMemoryCache(),
 })
 

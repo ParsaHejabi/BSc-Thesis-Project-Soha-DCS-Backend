@@ -64,6 +64,7 @@ module.exports = gql`
   type Message {
     id: ID!
     user: String!
+    receiver: String!
     content: String!
   }
   type Query {
@@ -80,13 +81,13 @@ module.exports = gql`
     login(loginInput: LoginInput): User!
     addUserRequest(userRequestInput: UserRequestInput): UserRequest!
 
-    postMessage(user: String!, content: String!): ID!
+    postMessage(user: String!, receiver: String!, content: String!): ID!
   }
 
   type Subscription {
     newUserRequest: UserRequest!
     newTopUsers: [User]!
-
-    messages: [Message!]
+    newMessage(receiver: String!): Message
+    messages(receiver: String!): [Message!]
   }
 `

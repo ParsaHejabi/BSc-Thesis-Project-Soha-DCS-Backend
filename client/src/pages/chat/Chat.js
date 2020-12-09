@@ -2,8 +2,8 @@ import React, { useContext } from 'react'
 import { useSubscription, useMutation, gql } from '@apollo/client'
 import { AuthContext } from '../../context/auth'
 const GET_MESSAGES = gql`
-  subscription {
-    messages {
+  subscription($receiver: String!) {
+    messages(receiver: $receiver) {
       id
       content
       user
@@ -12,13 +12,15 @@ const GET_MESSAGES = gql`
 `
 
 const POST_MESSAGE = gql`
-  mutation($user: String!, $content: String!) {
-    postMessage(user: $user, content: $content)
+  mutation($user: String!, $receiver: String!, $content: String!) {
+    postMessage(user: $user, receiver: $receiver, content: $content)
   }
 `
 
 const Messages = ({ user }) => {
-  const { data } = useSubscription(GET_MESSAGES)
+  const { data } = useSubscription(GET_MESSAGES, {
+    variables: { receiver: user },
+  })
   if (!data) {
     return null
   }
@@ -70,6 +72,7 @@ const Chat = () => {
 
   const [state, stateSet] = React.useState({
     user: user.username,
+    receiver: 'parastoo',
     content: '',
   })
   const [postMessage] = useMutation(POST_MESSAGE)

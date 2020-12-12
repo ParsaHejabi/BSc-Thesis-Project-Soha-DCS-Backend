@@ -2,11 +2,11 @@ const { Schema, model } = require('mongoose')
 
 const messageSchema = new Schema(
   {
-    message: {
+    content: {
       type: String,
       required: true,
     },
-    sender: {
+    user: {
       type: String,
       required: true,
       trim: true,

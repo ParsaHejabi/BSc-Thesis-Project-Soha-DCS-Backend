@@ -13,6 +13,7 @@ import About from './pages/About'
 import Profile from './pages/Profile'
 import Login from './pages/Login'
 import Chat from './pages/chat/Chat'
+import ChatLobby from './pages/chat/ChatLobby'
 import Register from './pages/Register'
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route component={About} path="/about" />
             <AuthRoute component={Register} path="/register" />
             <AuthRoute component={Login} path="/login" />
+            <Route component={ChatLobby} path="/chatlobby" />
             <Route component={Chat} path="/chat" />
             <Route component={Home} path="/" />
           </Switch>

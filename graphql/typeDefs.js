@@ -88,6 +88,7 @@ module.exports = gql`
     newUserRequest: UserRequest!
     newTopUsers: [User]!
     newMessage(receiver: String!): Message
-    messages(receiver: String!): [Message!]
+    messages(receiver: String!, other: String!): [Message!]
   }
 `
+// , sender: String!

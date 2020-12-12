@@ -23,6 +23,10 @@ const userSchema = new Schema(
       required: true,
       default: 0,
     },
+    chats: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
+      default: [],
+    },
   },
   {
     timestamps: true,

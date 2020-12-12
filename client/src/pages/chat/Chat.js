@@ -1,9 +1,12 @@
-import React, { useContext } from 'react'
+import React, { useEffect, useRef, useContext } from 'react'
 import { useSubscription, useMutation, gql } from '@apollo/client'
 import { AuthContext } from '../../context/auth'
+import { animateScroll } from 'react-scroll'
+import { Input, Button } from 'semantic-ui-react'
+import './Chat.css'
 const GET_MESSAGES = gql`
-  subscription($receiver: String!) {
-    messages(receiver: $receiver) {
+  subscription($receiver: String!, $other: String!) {
+    messages(receiver: $receiver, other: $other) {
       id
       content
       user
@@ -17,54 +20,35 @@ const POST_MESSAGE = gql`
   }
 `
 
-const Messages = ({ user }) => {
+const Messages = ({ user, other }) => {
   const { data } = useSubscription(GET_MESSAGES, {
-    variables: { receiver: user },
+    variables: { receiver: user, other: other },
   })
   if (!data) {
     return null
   }
-
+  animateScroll.scrollToBottom({
+    containerId: 'ContainerElementID',
+  })
   return (
-    <>
+    <div class="chat" id="ContainerElementID">
       {data.messages.map(({ id, user: messageUser, content }) => (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: user === messageUser ? 'flex-end' : 'flex-start',
-            paddingBottom: '1em',
-          }}
-        >
-          {user !== messageUser && (
-            <div
-              style={{
-                height: 50,
-                width: 50,
-                marginRight: '0.5em',
-                border: '2px solid #e5e6ea',
-                borderRadius: 25,
-                textAlign: 'center',
-                fontSize: '18pt',
-                paddingTop: 5,
-              }}
-            >
-              {messageUser.slice(0, 2).toUpperCase()}
-            </div>
-          )}
+        <div class="message-row">
           <div
-            style={{
-              background: user === messageUser ? 'blue' : '#e5e6ea',
-              color: user === messageUser ? 'white' : 'black',
-              padding: '1em',
-              borderRadius: '1em',
-              maxWidth: '60%',
-            }}
+            class={
+              'message message--' + (user === messageUser ? 'sent' : 'recieved')
+            }
           >
-            {content}
+            <div class="message-avatar">
+              {user === messageUser ? 'You' : 'Them'}
+            </div>
+            <div class="message-bubble">
+              <p className="message-text rtl-form-field ">{content}</p>
+            </div>
           </div>
         </div>
       ))}
-    </>
+    </div>
   )
 }
 const Chat = () => {
@@ -87,34 +71,36 @@ const Chat = () => {
       content: '',
     })
   }
+
   return (
     <div>
-      <Messages user={state.user} />
-      <div>
-        <div xs={8}>
-          <input
-            label="Content"
-            value={state.content}
-            onChange={(evt) =>
-              stateSet({
-                ...state,
-                content: evt.target.value,
-              })
+      <Messages className="content" user={state.user} other={state.receiver} />
+
+      <footer className="chat-footer">
+        <Input
+          className="chat-input rtl-form-field"
+          placeholder="چیزی بگو..."
+          value={state.content}
+          onChange={(evt) =>
+            stateSet({
+              ...state,
+              content: evt.target.value,
+            })
+          }
+          onKeyUp={(evt) => {
+            if (evt.keyCode === 13) {
+              onSend()
             }
-            onKeyUp={(evt) => {
-              if (evt.keyCode === 13) {
-                onSend()
-              }
-            }}
-          />
+          }}
+        />
+        <div>
+          <Button className="form-field" primary onClick={() => onSend()}>
+            ارسال
+          </Button>
         </div>
-        <div xs={2} style={{ padding: 0 }}>
-          <button onClick={() => onSend()} style={{ width: '100%' }}>
-            Send
-          </button>
-        </div>
-      </div>
+      </footer>
     </div>
   )
 }
+
 export default Chat

@@ -27,7 +27,7 @@ const MenuBar = () => {
         as={Link}
         to="/"
       />
-      <Menu.Item
+      {/* <Menu.Item
         name={`My Profile`}
         active={activeItem === 'profile'}
         onClick={handleItemClick}
@@ -40,7 +40,7 @@ const MenuBar = () => {
         onClick={handleItemClick}
         as={Link}
         to="/about"
-      />
+      /> */}
       <Menu.Menu position="right">
         <Menu.Item name="logout" onClick={logout} />
       </Menu.Menu>
@@ -54,13 +54,13 @@ const MenuBar = () => {
         as={Link}
         to="/"
       />
-      <Menu.Item
+      {/* <Menu.Item
         name="about"
         active={activeItem === 'about'}
         onClick={handleItemClick}
         as={Link}
         to="/about"
-      />
+      /> */}
       <Menu.Menu position="right">
         <Menu.Item
           name="register"

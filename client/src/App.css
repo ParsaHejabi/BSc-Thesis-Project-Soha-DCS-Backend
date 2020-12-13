@@ -73,3 +73,43 @@
 .form-field button {
   font-family: IRANSans !important;
 }
+
+.rtl-h2 {
+  direction: rtl;
+  font-family: 'dana';
+}
+
+.rtl-p {
+  direction: rtl;
+  font-family: IRANSans;
+}
+
+.rtl-b {
+  direction: rtl;
+  font-family: 'IRANSans Black';
+}
+
+.rtl-table {
+  font-family: IRANSans;
+}
+
+.rtl-button {
+  direction: rtl;
+  font-family: IRANSans !important;
+}
+
+.rtl-message {
+  direction: rtl;
+  font-family: IRANSans !important;
+}
+
+.rtl-message * {
+  direction: rtl;
+  font-family: IRANSans !important;
+}
+
+.rtl-form-label {
+  direction: rtl !important;
+  font-family: IRANSans !important;
+  float: right;
+}

@@ -51,7 +51,7 @@ function Register() {
       })
     },
     ignoreResults: false,
-    onCompleted: ({ login: userData }) => {
+    onCompleted: ({ register: userData }) => {
       setErrors({})
       setValues({
         username: '',

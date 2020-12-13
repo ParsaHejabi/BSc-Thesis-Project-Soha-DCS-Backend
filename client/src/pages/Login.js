@@ -131,6 +131,7 @@ function Login() {
         {loginData && (
           <Message
             success
+            visible
             header={`خوش آمدید!`}
             content={`تا چند ثانیه‌ی دیگر به خانه منتقل می‌شوید...`}
             className="form-field"

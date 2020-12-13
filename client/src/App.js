@@ -21,8 +21,8 @@ function App() {
         <Container>
           <MenuBar />
           <Switch>
-            <Route component={Profile} path="/profile" />
-            <Route component={About} path="/about" />
+            {/* <Route component={Profile} path="/profile" /> */}
+            {/* <Route component={About} path="/about" /> */}
             <AuthRoute component={Register} path="/register" />
             <AuthRoute component={Login} path="/login" />
             <Route component={Home} path="/" />

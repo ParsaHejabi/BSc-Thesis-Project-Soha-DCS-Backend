@@ -5,6 +5,8 @@ require('dotenv').config()
 const typeDefs = require('./graphql/typeDefs')
 const resolvers = require('./graphql/resolvers/index')
 
+const PORT = process.env.PORT || 5000
+
 const pubsub = new PubSub()
 
 const server = new ApolloServer({
@@ -21,8 +23,13 @@ mongoose
   })
   .then(() => {
     console.log('Connected to MongoDB')
-    return server.listen()
+    return server.listen({
+      port: PORT,
+    })
   })
   .then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`)
+  })
+  .catch((err) => {
+    console.log(err)
   })

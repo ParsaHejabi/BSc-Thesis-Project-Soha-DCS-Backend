@@ -30,6 +30,36 @@ module.exports = {
         throw new Error(error)
       }
     },
+    user: async (parent, { id }, context, info) => {
+      try {
+        const user = await User.findById(id, (err, res) => {
+          if (err) {
+            throw new Error('User Not Found')
+          }
+
+          if (res) {
+            return res
+          }
+        })
+
+        return user
+      } catch (e) {
+        throw new Error(e)
+      }
+    },
+    userByUsername: async (parent, { username }, context, info) => {
+      try {
+        const user = await User.findOne({ username })
+
+        if (user) {
+          return user
+        } else {
+          throw new Error('User Not Found')
+        }
+      } catch (e) {
+        throw new Error(e)
+      }
+    },
   },
   Mutation: {
     register: async (

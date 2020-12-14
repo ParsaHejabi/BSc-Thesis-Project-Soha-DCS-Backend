@@ -66,6 +66,8 @@ module.exports = gql`
     topUsers: [User]!
     userRequests: [UserRequest]!
     userRequest(username: String!): [UserRequest]!
+    user(id: ID!): User
+    userByUsername(username: String!): User
   }
 
   type Mutation {

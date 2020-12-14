@@ -8,9 +8,12 @@ const { on } = require('../../../models/User')
 const messages = {}
 const subscribers = {}
 const requestSubs = {}
+const requestAnswerSubs = {}
 const onlines = []
 const onMessagesUpdates = (receiver, fn) => (subscribers[receiver] = fn)
 const onRequestUpdates = (receiver, fn) => (requestSubs[receiver] = fn)
+const onRequestAnswerUpdates = (receiver, fn) =>
+  (requestAnswerSubs[receiver] = fn)
 const isChatValid = (text) => {
   return true
 }
@@ -58,6 +61,11 @@ const chatResolvers = {
       subscribers[user]()
       return message.id
     },
+    exitChat: async (parent, {}, context) => {
+      const user = checkAuth(context)
+      console.log(user.username + ' is exiting the chat')
+      messages[user.username] = null
+    },
     chatRequest: async (parent, { user, receiver }, context) => {
       checkAuth(context)
       console.log(user + ' is sending e request to ' + receiver)
@@ -67,10 +75,18 @@ const chatResolvers = {
         )
       }
 
-      const receiverUser = await User.findOne({ username: receiver })
-      const senderUser = await User.findOne({ username: user })
-
       requestSubs[receiver](user)
+    },
+    chatRequestAnswer: async (parent, { user, receiver }, context) => {
+      checkAuth(context)
+      console.log(user + ' is sending e Answer to ' + receiver)
+      if (!onlines.includes(receiver) || user === receiver) {
+        throw new Error(
+          "User isn't available! for request " + user + ' ' + receiver
+        )
+      }
+
+      requestAnswerSubs[receiver](user)
     },
   },
   Subscription: {
@@ -101,16 +117,26 @@ const chatResolvers = {
     },
     chatRequestSub: {
       subscribe: async (parent, args, { pubsub }) => {
-        const receiverUser = await User.findOne({
-          username: args.receiver,
-        })
-
         const channel = args.receiver + '@request'
         console.log('SUBBING ON + ' + channel)
         onRequestUpdates(args.receiver, (fromUser) =>
           pubsub.publish(channel, { chatRequestSub: fromUser })
         )
         setTimeout(() => pubsub.publish(channel, { chatRequestSub: '' }), 0)
+        return pubsub.asyncIterator(channel)
+      },
+    },
+    chatRequestAnswerSub: {
+      subscribe: async (parent, args, { pubsub }) => {
+        const channel = args.receiver + '@requestanswer'
+        console.log('SUBBING ON Answer + ' + channel)
+        onRequestAnswerUpdates(args.receiver, (fromUser) =>
+          pubsub.publish(channel, { chatRequestAnswerSub: fromUser })
+        )
+        setTimeout(
+          () => pubsub.publish(channel, { chatRequestAnswerSub: '' }),
+          0
+        )
         return pubsub.asyncIterator(channel)
       },
     },

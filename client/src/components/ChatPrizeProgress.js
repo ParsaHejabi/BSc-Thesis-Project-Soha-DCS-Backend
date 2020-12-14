@@ -34,7 +34,7 @@ const PrizesBar = ({ totalPoints }) => {
   }
   const prizeIndex = getPrizeIndex()
   return (
-    <div class="page">
+    <div class="timeline__page">
       <div className="timeline__title">
         {' '}
         {totalPoints} :مجموع امتیازات کاربران

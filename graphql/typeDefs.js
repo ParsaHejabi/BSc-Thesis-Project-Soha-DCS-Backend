@@ -85,8 +85,10 @@ module.exports = gql`
     login(loginInput: LoginInput): User!
     addUserRequest(userRequestInput: UserRequestInput): UserRequest!
 
+    chatRequestAnswer(user: String!, receiver: String!): Void
     chatRequest(user: String!, receiver: String!): Void
     postMessage(user: String!, receiver: String!, content: String!): ID!
+    exitChat: Void
   }
 
   type Subscription {
@@ -95,6 +97,7 @@ module.exports = gql`
     newMessage(receiver: String!): Message
     messages(receiver: String!, other: String!): [Message!]
     chatRequestSub(receiver: String!): String
+    chatRequestAnswerSub(receiver: String!): String
     onlineUsers: [String]
   }
 `

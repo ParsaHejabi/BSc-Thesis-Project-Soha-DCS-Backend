@@ -191,3 +191,16 @@
   margin-top: 2vh !important;
   min-width: 10vh;
 }
+.modal-text {
+  direction: rtl !important;
+  text-align: right;
+  font-family: IRANSans !important;
+}
+.chat-error {
+  text-align: center;
+  font-family: IRANSans !important;
+  direction: rtl !important;
+  font-weight: bolder;
+  color: red;
+  font-size: 12px;
+}

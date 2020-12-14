@@ -2,7 +2,14 @@ import React, { useEffect, useRef, useContext } from 'react'
 import { useQuery, gql, useSubscription, useMutation } from '@apollo/client'
 import { AuthContext } from '../../context/auth'
 import { animateScroll } from 'react-scroll'
-import { Input, Button, Dropdown } from 'semantic-ui-react'
+import {
+  Input,
+  Button,
+  Dropdown,
+  Header,
+  Image,
+  Modal,
+} from 'semantic-ui-react'
 import { useHistory } from 'react-router-dom'
 import PrizesBar from '../../components/ChatPrizeProgress'
 import ChatLeaderBoad from '../../components/ChatLeaderBoard'
@@ -15,6 +22,16 @@ const GET_CHAT_REQUESTS = gql`
 const SEND_CHAT_REQUESTS = gql`
   mutation($user: String!, $receiver: String!) {
     chatRequest(user: $user, receiver: $receiver)
+  }
+`
+const GET_CHAT_REQUESTS_ANSWER = gql`
+  subscription($receiver: String!) {
+    chatRequestAnswerSub(receiver: $receiver)
+  }
+`
+const SEND_CHAT_REQUEST_ANSWER = gql`
+  mutation($user: String!, $receiver: String!) {
+    chatRequestAnswer(user: $user, receiver: $receiver)
   }
 `
 
@@ -43,6 +60,48 @@ const GET_CHAT_LEADERBOARD = gql`
   }
 `
 
+function RequestModal({ open, setOpen, user, onAccept }) {
+  return (
+    <Modal
+      onClose={() => setOpen(false)}
+      onOpen={() => setOpen(true)}
+      open={open}
+    >
+      <Modal.Header>
+        <p className="modal-text">درخواست چت</p>
+      </Modal.Header>
+      <Modal.Content>
+        <Modal.Description>
+          <Header>
+            <p className="modal-text">از طرف ‌{user}</p>
+          </Header>
+          <p className="modal-text">کاربر {user} می‌خواهد با شما وارد چت شود</p>
+          <p className="modal-text">موافقید؟</p>
+        </Modal.Description>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button color="red" onClick={() => setOpen(false)}>
+          خیر
+        </Button>
+        <Button
+          content="بلی"
+          labelPosition="right"
+          icon="checkmark"
+          color="blue"
+          onClick={() => {
+            setOpen(false)
+            onAccept(user)
+          }}
+          primary
+        />
+      </Modal.Actions>
+    </Modal>
+  )
+}
+const sentRequest = {
+  to: '',
+  didSend: false,
+}
 const ChatCard = ({
   user,
   usersList,
@@ -92,6 +151,12 @@ const ChatLobby = () => {
   let { user } = useContext(AuthContext)
   if (!user) user = { username: '' }
   const history = useHistory()
+
+  const [modalOpen, setModalOpen] = React.useState(false)
+  const closeModalWithCallBack = () => {
+    setModalOpen(false)
+    requestsSub.data.chatRequestSub = ''
+  }
   const [allPoints, setAllPoints] = React.useState(0)
   let pointQuery = useQuery(ALL_CHAT_POINTS, {
     onCompleted: (data) => {
@@ -107,14 +172,38 @@ const ChatLobby = () => {
   let requestsSub = useSubscription(GET_CHAT_REQUESTS, {
     variables: { receiver: user.username },
   })
-  const [sendRequest] = useMutation(SEND_CHAT_REQUESTS)
-  if (requestsSub.error) alert(JSON.stringify(requestsSub.error, null, 2))
 
+  let requestsAnswerSub = useSubscription(GET_CHAT_REQUESTS_ANSWER, {
+    variables: { receiver: user.username },
+  })
+  const [sendRequest] = useMutation(SEND_CHAT_REQUESTS)
+  const [sendRequestAnswer] = useMutation(SEND_CHAT_REQUEST_ANSWER)
+  if (requestsAnswerSub.error) alert(JSON.stringify(requestsSub.error, null, 2))
+
+  const getRequestAnswerMaker = () => {
+    return requestsAnswerSub?.data?.chatRequestAnswerSub &&
+      requestsAnswerSub.data.chatRequestAnswerSub !== ''
+      ? requestsAnswerSub.data.chatRequestAnswerSub
+      : null
+  }
+  const answerMaker = getRequestAnswerMaker()
+  if (answerMaker && answerMaker === sentRequest.to) {
+    history.push('/chat', { otherUser: answerMaker })
+  }
+
+  const getRequestMaker = () => {
+    return requestsSub?.data?.chatRequestSub &&
+      requestsSub.data.chatRequestSub !== ''
+      ? requestsSub.data.chatRequestSub
+      : null
+  }
   if (
     requestsSub?.data?.chatRequestSub &&
-    requestsSub.data.chatRequestSub !== ''
-  )
-    alert('REQUEST FROM: ' + requestsSub.data.chatRequestSub)
+    requestsSub.data.chatRequestSub !== '' &&
+    !modalOpen
+  ) {
+    setModalOpen(true)
+  }
   const [other, setOther] = React.useState('')
 
   const getOnlineUsers = () => {
@@ -147,13 +236,20 @@ const ChatLobby = () => {
     if (!usersList.map((item) => item.value).includes(other))
       setUsernameError('کاربر مورد نظر در لیست آنلاین‌ها یافت نشد')
     else {
-      alert(user.username + ' ====== ' + other)
       sendRequest({
         variables: { user: user.username, receiver: other },
       })
+      sentRequest.didSend = true
+      sentRequest.to = other
     }
 
     // history.push('/chat', { otherUser: other })
+  }
+  const onAccept = (targetUser) => {
+    sendRequestAnswer({
+      variables: { user: user.username, receiver: targetUser },
+    })
+    history.push('/chat', { otherUser: targetUser })
   }
   const isLoading = () => {
     return (
@@ -162,24 +258,32 @@ const ChatLobby = () => {
   }
 
   return !isLoading() ? (
-    <div className="chat-lobby-container ">
-      <div className="lobby-container-left">
-        <ChatCard
-          user={user}
-          usersList={usersList}
-          onDropdownChange={onDropdownChange}
-          other={other}
-          usernameError={usernameError}
-          submit={submit}
-          error={error}
-        />
-        <ChatLeaderBoad
-          leaderboardData={leaderboardQuery.data?.topChatUsers}
-          username={user.username}
-        />
+    <>
+      <div className="chat-lobby-container ">
+        <div className="lobby-container-left">
+          <ChatCard
+            user={user}
+            usersList={usersList}
+            onDropdownChange={onDropdownChange}
+            other={other}
+            usernameError={usernameError}
+            submit={submit}
+            error={error}
+          />
+          <ChatLeaderBoad
+            leaderboardData={leaderboardQuery.data?.topChatUsers}
+            username={user.username}
+          />
+        </div>
+        <PrizesBar totalPoints={allPoints}></PrizesBar>
       </div>
-      <PrizesBar totalPoints={allPoints}></PrizesBar>
-    </div>
+      <RequestModal
+        open={modalOpen}
+        setOpen={closeModalWithCallBack}
+        user={getRequestMaker()}
+        onAccept={onAccept}
+      />
+    </>
   ) : (
     <div>LOADING...</div>
   )

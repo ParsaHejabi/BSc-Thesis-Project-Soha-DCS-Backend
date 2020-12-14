@@ -22,18 +22,6 @@ p:not([class]):first-child {
   display: var(--timeDisplay, inline-flex);
 }
 
-/*
-  extensions
-  */
-
-.time__month {
-  /* margin-left: var(--timelineMounthMarginLeft, 0.25em); */
-}
-
-/*
-  skin
-  */
-
 .time {
   padding: var(--timePadding, 0.25rem 1.25rem 0.25rem);
   background-color: var(--timeBackgroundColor, #f0f0f0);
@@ -43,14 +31,6 @@ p:not([class]):first-child {
   text-transform: var(--timeTextTransform, uppercase);
   color: var(--timeColor, currentColor);
 }
-
-/*
-  card component
-  */
-
-/*
-  core styles
-  */
 
 .card {
   padding: var(--timelineCardPadding, 1.5rem 1.5rem 1.25rem);
@@ -224,7 +204,7 @@ p:last-child {
   margin-bottom: 0;
 }
 
-.page {
+.timeline__page {
   max-width: 47rem;
   padding: 3rem 3rem;
   /* margin-left: auto;

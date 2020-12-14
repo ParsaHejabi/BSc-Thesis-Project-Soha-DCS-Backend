@@ -3,6 +3,7 @@ import { useSubscription, useMutation, gql } from '@apollo/client'
 import { AuthContext } from '../../context/auth'
 import { animateScroll } from 'react-scroll'
 import { Input, Button } from 'semantic-ui-react'
+import isContentValid from '../../util/ChatValidations'
 import './Chat.css'
 const GET_MESSAGES = gql`
   subscription($receiver: String!, $other: String!) {
@@ -17,6 +18,11 @@ const GET_MESSAGES = gql`
 const POST_MESSAGE = gql`
   mutation($user: String!, $receiver: String!, $content: String!) {
     postMessage(user: $user, receiver: $receiver, content: $content)
+  }
+`
+const EXIT_CHAT = gql`
+  mutation {
+    exitChat
   }
 `
 
@@ -60,17 +66,28 @@ const Chat = ({ otherUser }) => {
     content: '',
   })
   const [postMessage] = useMutation(POST_MESSAGE)
+
+  const [exitChat] = useMutation(EXIT_CHAT)
   const onSend = () => {
-    if (state.content.length > 0) {
+    const error = isContentValid(state.content)
+    if (!error) {
       postMessage({
         variables: state,
       })
+    } else {
+      setChatError(error)
     }
     stateSet({
       ...state,
       content: '',
     })
   }
+  const [chatError, setChatError] = React.useState(null)
+  // useEffect(() => {
+  //   return function cleanup() {
+  //     exitChat()
+  //   }
+  // })
 
   return (
     <div>
@@ -99,6 +116,7 @@ const Chat = ({ otherUser }) => {
           </Button>
         </div>
       </footer>
+      <div className="chat-error">{chatError}</div>
     </div>
   )
 }

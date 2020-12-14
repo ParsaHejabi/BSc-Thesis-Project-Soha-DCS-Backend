@@ -150,8 +150,7 @@ h2.sub.header {
 .leaderboard {
   counter-reset: leaderboard-counter;
 }
-.leaderboard-name {
-}
+
 .leaderboard dt {
   position: relative;
   padding-left: 40px;

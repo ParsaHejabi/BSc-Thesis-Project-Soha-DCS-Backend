@@ -27,6 +27,12 @@ const userSchema = new Schema(
       type: [{ type: Schema.Types.ObjectId, ref: 'Message' }],
       default: [],
     },
+    chatPoints: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    didRegisterForChat: { type: Boolean, required: true, default: false },
   },
   {
     timestamps: true,

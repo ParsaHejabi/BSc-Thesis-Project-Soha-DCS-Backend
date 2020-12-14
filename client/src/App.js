@@ -28,7 +28,13 @@ function App() {
             <AuthRoute component={Register} path="/register" />
             <AuthRoute component={Login} path="/login" />
             <Route component={ChatLobby} path="/chatlobby" />
-            <Route component={Chat} path="/chat" />
+            <Route
+              exact
+              path="/chat"
+              render={(otherUser) => {
+                return <Chat otherUser={otherUser} />
+              }}
+            />
             <Route component={Home} path="/" />
           </Switch>
         </Container>

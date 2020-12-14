@@ -51,12 +51,12 @@ const Messages = ({ user, other }) => {
     </div>
   )
 }
-const Chat = () => {
+const Chat = ({ otherUser }) => {
+  const other = otherUser.location.state.otherUser
   const { user } = useContext(AuthContext)
-
   const [state, stateSet] = React.useState({
     user: user.username,
-    receiver: 'parastoo',
+    receiver: other,
     content: '',
   })
   const [postMessage] = useMutation(POST_MESSAGE)

@@ -2,7 +2,7 @@ const { gql } = require('apollo-server')
 
 module.exports = gql`
   scalar Date
-
+  scalar Void
   enum RequestPlace {
     WEBSITE
     TWITTER
@@ -30,6 +30,7 @@ module.exports = gql`
     createdAt: Date!
     updatedAt: Date!
     messages: [Message]
+    chatPoints: Int
   }
 
   type UserRequest {
@@ -73,7 +74,10 @@ module.exports = gql`
     userRequests: [UserRequest]!
     userRequest(username: String!): [UserRequest]
 
+    onlineUsersInit: [String]
     messages: [Message!]
+    allChatPoints: Int
+    topChatUsers: [User]!
   }
 
   type Mutation {
@@ -81,6 +85,7 @@ module.exports = gql`
     login(loginInput: LoginInput): User!
     addUserRequest(userRequestInput: UserRequestInput): UserRequest!
 
+    chatRequest(user: String!, receiver: String!): Void
     postMessage(user: String!, receiver: String!, content: String!): ID!
   }
 
@@ -89,6 +94,8 @@ module.exports = gql`
     newTopUsers: [User]!
     newMessage(receiver: String!): Message
     messages(receiver: String!, other: String!): [Message!]
+    chatRequestSub(receiver: String!): String
+    onlineUsers: [String]
   }
 `
 // , sender: String!

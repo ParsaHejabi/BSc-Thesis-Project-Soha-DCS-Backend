@@ -28,11 +28,11 @@ const MenuBar = () => {
         to="/"
       />
       <Menu.Item
-        name={`Chat`}
-        active={activeItem === 'chat'}
+        name={`chat lobby`}
+        active={activeItem === 'chatlobby'}
         onClick={handleItemClick}
         as={Link}
-        to="/chat"
+        to="/chatlobby"
       />
       <Menu.Item
         name={`My Profile`}

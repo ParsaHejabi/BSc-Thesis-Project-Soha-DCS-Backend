@@ -1,7 +1,7 @@
 const users = require('./users')
 const topUsers = require('./topUsers')
 const userRequestResolvers = require('./userRequests')
-const chatResolvers = require('./chat/chats')
+const { chatResolvers } = require('./chat/chats')
 const { Date } = require('./date')
 
 module.exports = {

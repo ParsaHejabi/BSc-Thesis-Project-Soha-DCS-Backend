@@ -1,6 +1,6 @@
 import React, { createContext, useReducer } from 'react'
 import jwtDecode from 'jwt-decode'
-
+import { closeSocket, openSocket } from '../ApolloProvider'
 const initialState = {
   user: null,
 }
@@ -44,11 +44,14 @@ function AuthProvider(props) {
   function login(userData) {
     localStorage.setItem('jwtToken', userData.token)
     dispatch({ type: 'LOGIN', payload: userData })
+    openSocket()
   }
 
   function logout() {
     localStorage.removeItem('jwtToken')
     dispatch({ type: 'LOGOUT' })
+
+    closeSocket()
   }
 
   return (

@@ -7,6 +7,8 @@ import { AuthContext } from '../context/auth'
 const MenuBar = () => {
   const { user, logout } = useContext(AuthContext)
 
+  const admin = user && user.username === 'admin'
+
   let location = useLocation()
   const path = location.pathname === '/' ? 'home' : location.pathname.substr(1)
 
@@ -27,6 +29,15 @@ const MenuBar = () => {
         as={Link}
         to="/"
       />
+      {admin && (
+        <Menu.Item
+          name="admin"
+          active={activeItem === 'admin'}
+          onClick={handleItemClick}
+          as={Link}
+          to="/admin"
+        />
+      )}
       {/* <Menu.Item
         name={`My Profile`}
         active={activeItem === 'profile'}

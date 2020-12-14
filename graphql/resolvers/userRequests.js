@@ -35,6 +35,16 @@ module.exports = {
         throw new Error(e)
       }
     },
+    unapprovedUserRequests: async () => {
+      try {
+        let userRequests = await UserRequest.find({ approved: false }).sort({
+          createdAt: -1,
+        })
+        return userRequests
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
   },
   Mutation: {
     addUserRequest: async (

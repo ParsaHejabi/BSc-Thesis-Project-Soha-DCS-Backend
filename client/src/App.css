@@ -113,3 +113,7 @@
   font-family: IRANSans !important;
   float: right;
 }
+
+.ui.message .header {
+  font-family: 'IRANSans Black' !important;
+}

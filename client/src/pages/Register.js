@@ -1,7 +1,7 @@
 import { useMutation, gql } from '@apollo/client'
-import { useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import { Form, Message } from 'semantic-ui-react'
-import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
 
 import { AuthContext } from '../context/auth'
 import { useForm } from '../util/hooks'
@@ -30,7 +30,7 @@ function Register() {
     }
   )
 
-  let history = useHistory()
+  // let history = useHistory()
 
   const [
     register,
@@ -61,15 +61,15 @@ function Register() {
     },
   })
 
-  useEffect(() => {
-    let interval = null
-    if (registerData) {
-      interval = setInterval(() => {
-        history.push('/')
-      }, 3000)
-    }
-    return () => (interval ? clearInterval(interval) : null)
-  }, [history, registerData])
+  // useEffect(() => {
+  //   let interval = null
+  //   if (registerData) {
+  //     interval = setInterval(() => {
+  //       history.push('/')
+  //     }, 3000)
+  //   }
+  //   return () => (interval ? clearInterval(interval) : null)
+  // }, [history, registerData])
 
   function registerHoistedFunction() {
     register()

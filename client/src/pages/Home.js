@@ -98,8 +98,15 @@ function Home() {
             possibleReference: values.possibleReference,
           }
         : values,
-    onError(error) {
-      setErrors(error.graphQLErrors[0].extensions.exception.errors.errors)
+    // update(cache, mutationResult) {
+    //   let { loading, error, data } = useQuery(GET_TOP_USERS)
+
+    //   cache.writeQuery({ query: GET_TOP_USERS, data })
+    // },
+    refetchQueries: [{ query: GET_TOP_USERS }],
+    awaitRefetchQueries: true,
+    onCompleted: () => {
+      setErrors({})
       setValues({
         properties: [],
         text: '',
@@ -107,10 +114,8 @@ function Home() {
         possibleReference: '',
       })
     },
-    refetchQueries: [{ query: GET_TOP_USERS }],
-    ignoreResults: false,
-    onCompleted: () => {
-      setErrors({})
+    onError(error) {
+      setErrors(error.graphQLErrors[0].extensions.exception.errors.errors)
       setValues({
         properties: [],
         text: '',
@@ -393,6 +398,7 @@ function Home() {
                     onChange={onChangeCheckbox}
                     control="input"
                     type="checkbox"
+                    checked={values.properties.indexOf('SARCASM') >= 0}
                   />
                   <Form.Input
                     name="HUMOR"
@@ -400,6 +406,7 @@ function Home() {
                     onChange={onChangeCheckbox}
                     control="input"
                     type="checkbox"
+                    checked={values.properties.indexOf('HUMOR') >= 0}
                   />
                   <Form.Input
                     name="INSULT"
@@ -407,6 +414,7 @@ function Home() {
                     onChange={onChangeCheckbox}
                     control="input"
                     type="checkbox"
+                    checked={values.properties.indexOf('INSULT') >= 0}
                   />
                   <label>است.</label>
                 </Form.Group>

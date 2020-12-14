@@ -1,7 +1,7 @@
 import { useMutation, gql } from '@apollo/client'
-import { useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import { Form, Message } from 'semantic-ui-react'
-import { useHistory } from 'react-router-dom'
+// import { useHistory } from 'react-router-dom'
 
 import { AuthContext } from '../context/auth'
 import { useForm } from '../util/hooks'
@@ -31,7 +31,7 @@ function Login() {
     }
   )
 
-  let history = useHistory()
+  // let history = useHistory()
 
   const [login, { loading: loginLoading, data: loginData }] = useMutation(
     LOGIN,
@@ -63,15 +63,15 @@ function Login() {
     }
   )
 
-  useEffect(() => {
-    let interval = null
-    if (loginData) {
-      interval = setInterval(() => {
-        history.push('/')
-      }, 3000)
-    }
-    return () => (interval ? clearInterval(interval) : null)
-  }, [history, loginData])
+  // useEffect(() => {
+  //   let interval = null
+  //   if (loginData) {
+  //     interval = setInterval(() => {
+  //       history.push('/')
+  //     }, 3000)
+  //   }
+  //   return () => (interval ? clearInterval(interval) : null)
+  // }, [history, loginData])
 
   function loginHoistedFunction() {
     login()

@@ -69,6 +69,7 @@ module.exports = gql`
     topUsers: [User]!
     userRequests: [UserRequest]!
     userRequest(username: String!): [UserRequest]!
+    unapprovedUserRequests: [UserRequest]!
     user(id: ID!): User
     userByUsername(username: String!): User
   }

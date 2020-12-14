@@ -387,20 +387,26 @@ function Home() {
                 />
                 <Form.Group className="rtl-form-field" inline>
                   <label>این متن حاوی:</label>
-                  <Form.Checkbox
+                  <Form.Input
                     name="SARCASM"
                     label="طعنه"
                     onChange={onChangeCheckbox}
+                    control="input"
+                    type="checkbox"
                   />
-                  <Form.Checkbox
+                  <Form.Input
                     name="HUMOR"
                     label="طنز"
                     onChange={onChangeCheckbox}
+                    control="input"
+                    type="checkbox"
                   />
-                  <Form.Checkbox
+                  <Form.Input
                     name="INSULT"
                     label="توهین"
                     onChange={onChangeCheckbox}
+                    control="input"
+                    type="checkbox"
                   />
                   <label>است.</label>
                 </Form.Group>

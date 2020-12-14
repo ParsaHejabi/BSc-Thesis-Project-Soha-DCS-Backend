@@ -28,6 +28,21 @@ const userRequestchema = new Schema(
       enum: ['TWITTER', 'WEBSITE'],
       required: true,
     },
+    possiblePoints: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
+    points: {
+      type: Number,
+      default: 0,
+      required: true,
+    },
+    approved: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
   {
     timestamps: true,

@@ -57,12 +57,34 @@ module.exports = {
         })
       }
 
+      let optionalFieldsFilledCount = 0
+
+      optionalFieldsFilledCount =
+        type !== '' ? optionalFieldsFilledCount + 1 : optionalFieldsFilledCount
+      optionalFieldsFilledCount =
+        possibleReference !== ''
+          ? optionalFieldsFilledCount + 1
+          : optionalFieldsFilledCount
+      optionalFieldsFilledCount =
+        Array.isArray(properties) && properties.length
+          ? optionalFieldsFilledCount + 1
+          : optionalFieldsFilledCount
+
+      let textSizePoint = 0
+
+      if (text.length >= 50) {
+        textSizePoint += 5
+      } else {
+        textSizePoint += Math.floor(text.length / 10)
+      }
+
       const newUserRequest = new UserRequest({
         user: user.id,
         text: text,
         type: type,
         possibleReference: possibleReference,
         properties: properties,
+        possiblePoints: optionalFieldsFilledCount * 2 + textSizePoint * 2,
         place: place,
       })
 
@@ -74,11 +96,12 @@ module.exports = {
         } else {
           user.requests.push(res)
 
-          if (place === 'WEBSITE') {
-            user.points = user.points + 5
-          } else {
-            user.points = user.points + 2
-          }
+          // if (place === 'WEBSITE') {
+          //   user.points = user.points + 5
+          // } else {
+          //   user.points = user.points + 2
+          // }
+
           await user.save()
 
           context.pubsub.publish('NEW_USER_REQUEST', {

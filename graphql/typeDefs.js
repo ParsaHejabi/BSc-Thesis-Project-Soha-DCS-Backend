@@ -39,6 +39,9 @@ module.exports = gql`
     possibleReference: String
     properties: [RequestProperty]
     place: RequestPlace!
+    possiblePoints: Int
+    points: Int
+    approved: Boolean
     createdAt: Date!
     updatedAt: Date!
   }

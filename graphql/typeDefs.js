@@ -64,11 +64,22 @@ module.exports = gql`
     place: RequestPlace!
   }
 
+  input adminUserRequestInput {
+    id: ID!
+    text: String!
+    type: RequestType
+    possibleReference: String
+    properties: [RequestProperty]
+    points: Int
+    approved: Boolean
+  }
+
   type Query {
     users: [User]!
     topUsers: [User]!
     userRequests: [UserRequest]!
     userRequest(username: String!): [UserRequest]!
+    userRequestWithId(id: ID!): UserRequest
     unapprovedUserRequests: [UserRequest]!
     user(id: ID!): User
     userByUsername(username: String!): User
@@ -78,6 +89,9 @@ module.exports = gql`
     register(registerInput: RegisterInput): User!
     login(loginInput: LoginInput): User!
     addUserRequest(userRequestInput: UserRequestInput): UserRequest!
+    updateUserRequest(
+      adminUserRequestInput: adminUserRequestInput
+    ): UserRequest!
   }
 
   type Subscription {

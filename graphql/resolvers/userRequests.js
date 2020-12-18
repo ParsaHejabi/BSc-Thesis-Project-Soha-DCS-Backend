@@ -5,6 +5,8 @@ const { UserRequest } = require('../../models/UserRequest')
 const { validateRequestInput } = require('../../util/validators')
 const checkAuth = require('../../util/check-auth')
 
+const arraysEqual = require('../../util/arrayEquality')
+
 module.exports = {
   Query: {
     userRequests: async () => {
@@ -45,6 +47,23 @@ module.exports = {
         throw new Error(error)
       }
     },
+    userRequestWithId: async (parent, { id }, context, info) => {
+      try {
+        const userRequest = await UserRequest.findById(id, (err, res) => {
+          if (err) {
+            throw new Error('User Request Not Found')
+          }
+
+          if (res) {
+            return res
+          }
+        })
+
+        return userRequest
+      } catch (e) {
+        throw new Error(e)
+      }
+    },
   },
   Mutation: {
     addUserRequest: async (
@@ -69,8 +88,9 @@ module.exports = {
 
       let optionalFieldsFilledCount = 0
 
-      optionalFieldsFilledCount =
-        type !== '' ? optionalFieldsFilledCount + 1 : optionalFieldsFilledCount
+      optionalFieldsFilledCount = type
+        ? optionalFieldsFilledCount + 1
+        : optionalFieldsFilledCount
       optionalFieldsFilledCount =
         possibleReference !== ''
           ? optionalFieldsFilledCount + 1
@@ -125,6 +145,103 @@ module.exports = {
         }
       })
       return newUserRequest
+    },
+    updateUserRequest: async (
+      parent,
+      {
+        adminUserRequestInput: {
+          id,
+          text,
+          type,
+          possibleReference,
+          properties,
+          points,
+          approved,
+        },
+      },
+      context,
+      info
+    ) => {
+      const user = checkAuth(context)
+
+      const { errors, valid } = validateRequestInput(text)
+
+      if (!valid) {
+        throw new UserInputError('Validation Error', {
+          errors: {
+            errors,
+          },
+        })
+      }
+
+      let userRequest = await UserRequest.findById(
+        id,
+        async (err, userRequest) => {
+          if (err) {
+            throw new Error(err)
+          } else {
+            return userRequest
+          }
+        }
+      )
+
+      if (points) {
+        userRequest.text = text
+        userRequest.type = type
+        userRequest.possibleReference = possibleReference
+        userRequest.properties = properties
+        userRequest.points = points
+        userRequest.approved = approved
+
+        userRequest = await userRequest.save()
+
+        if (userRequest && userRequest.approved) {
+          User.findById(userRequest.user, async (err, user) => {
+            if (err) {
+              throw new Error(err)
+            } else {
+              user.points += points
+              await user.save()
+            }
+          })
+        }
+      } else {
+        let possiblePoints = userRequest.possiblePoints
+        if (userRequest.text !== text) {
+          possiblePoints -= 1
+        }
+        if (userRequest.type !== type) {
+          possiblePoints -= 1
+        }
+        if (userRequest.possibleReference !== possibleReference) {
+          possiblePoints -= 1
+        }
+        if (!arraysEqual(userRequest.properties, properties)) {
+          possiblePoints -= 1
+        }
+
+        userRequest.text = text
+        userRequest.type = type
+        userRequest.possibleReference = possibleReference
+        userRequest.properties = properties
+        userRequest.points = possiblePoints
+        userRequest.approved = approved
+
+        userRequest = await userRequest.save()
+
+        if (userRequest && userRequest.approved) {
+          User.findById(userRequest.user, async (err, user) => {
+            if (err) {
+              throw new Error(err)
+            } else {
+              user.points += possiblePoints
+              await user.save()
+            }
+          })
+        }
+      }
+
+      return userRequest
     },
   },
   Subscription: {

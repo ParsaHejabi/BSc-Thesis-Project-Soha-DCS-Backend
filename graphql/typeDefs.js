@@ -83,6 +83,10 @@ module.exports = gql`
     unapprovedUserRequests: [UserRequest]!
     user(id: ID!): User
     userByUsername(username: String!): User
+    userRequestsCount: Int!
+    userQuestionsCount: Int!
+    userOpinionsCount: Int!
+    userOtherRequestsCount: Int!
   }
 
   type Mutation {

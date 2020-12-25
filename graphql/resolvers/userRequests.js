@@ -64,6 +64,86 @@ module.exports = {
         throw new Error(e)
       }
     },
+    userRequestsCount: async () => {
+      try {
+        const userRequestsCount = await UserRequest.countDocuments(
+          { type: 'REQUEST', approved: true },
+          (err, count) => {
+            if (err) {
+              throw new Error('Error getting requests count')
+            }
+
+            if (count) {
+              return count
+            }
+          }
+        )
+
+        return userRequestsCount
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    userQuestionsCount: async () => {
+      try {
+        const userQuestionsCount = await UserRequest.countDocuments(
+          { type: 'QUESTION', approved: true },
+          (err, count) => {
+            if (err) {
+              throw new Error('Error getting questions count')
+            }
+
+            if (count) {
+              return count
+            }
+          }
+        )
+
+        return userQuestionsCount
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    userOpinionsCount: async () => {
+      try {
+        const userOpinionsCount = await UserRequest.countDocuments(
+          { type: 'OPINION', approved: true },
+          (err, count) => {
+            if (err) {
+              throw new Error('Error getting opinions count')
+            }
+
+            if (count) {
+              return count
+            }
+          }
+        )
+
+        return userOpinionsCount
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    userOtherRequestsCount: async () => {
+      try {
+        const userOpinionsCount = await UserRequest.countDocuments(
+          { type: 'OTHER', approved: true },
+          (err, count) => {
+            if (err) {
+              throw new Error('Error getting opinions count')
+            }
+
+            if (count) {
+              return count
+            }
+          }
+        )
+
+        return userOpinionsCount
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
   },
   Mutation: {
     addUserRequest: async (

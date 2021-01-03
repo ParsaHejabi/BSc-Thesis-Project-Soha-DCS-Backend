@@ -14,10 +14,7 @@ module.exports = (a, b) => {
   cloneB.sort()
 
   for (let i = 0; i < cloneA.length; ++i) {
-    console.log(cloneA[i])
-    console.log(cloneB[i])
     if (cloneA[i] !== cloneB[i]) {
-      console.log(cloneA[i])
       return false
     }
   }

@@ -87,6 +87,10 @@ module.exports = gql`
     userQuestionsCount: Int!
     userOpinionsCount: Int!
     userOtherRequestsCount: Int!
+    userRequestsUnapprovedCount: Int!
+    userQuestionsUnapprovedCount: Int!
+    userOpinionsUnapprovedCount: Int!
+    userOtherRequestsUnapprovedCount: Int!
   }
 
   type Mutation {

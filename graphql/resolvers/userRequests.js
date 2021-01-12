@@ -40,7 +40,17 @@ module.exports = {
     unapprovedUserRequests: async () => {
       try {
         let userRequests = await UserRequest.find({ approved: false }).sort({
-          createdAt: -1,
+          createdAt: 1,
+        })
+        return userRequests
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+    allUserRequests: async () => {
+      try {
+        let userRequests = await UserRequest.find().sort({
+          createdAt: 1,
         })
         return userRequests
       } catch (error) {

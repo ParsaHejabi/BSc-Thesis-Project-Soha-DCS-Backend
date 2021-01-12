@@ -81,6 +81,7 @@ module.exports = gql`
     userRequest(username: String!): [UserRequest]!
     userRequestWithId(id: ID!): UserRequest
     unapprovedUserRequests: [UserRequest]!
+    allUserRequests: [UserRequest]!
     user(id: ID!): User
     userByUsername(username: String!): User
     userRequestsCount: Int!

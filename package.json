@@ -27,7 +27,7 @@
   },
   "homepage": "https://gitlab.com/ParsaHejabi/soha-data-collection-system#readme",
   "dependencies": {
-    "apollo-server": "^2.19.0",
+    "apollo-server": "^2.25.3",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "graphql": "^15.4.0",
